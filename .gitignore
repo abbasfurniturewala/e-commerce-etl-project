@@ -21,3 +21,6 @@ airflow/logs/*
 dbt/logs/
 dbt/target/
 dbt/.user.yml
+
+# Databricks bundle local state stays local.
+.databricks/

@@ -1,0 +1,29 @@
+bundle:
+  name: ecommerce_lakehouse
+
+include:
+  - databricks/resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog used by the Free Edition development workspace.
+    default: workspace
+  bronze_schema:
+    description: Schema containing raw Bronze Delta tables and the landing volume.
+    default: ecommerce_bronze
+  silver_schema:
+    description: Schema containing cleaned Silver Delta tables.
+    default: ecommerce_silver
+  gold_schema:
+    description: Schema containing analytics-ready Gold Delta tables.
+    default: ecommerce_gold
+  landing_volume:
+    description: Managed Unity Catalog volume receiving immutable daily landing files.
+    default: landing
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-ac08fa05-89b5.cloud.databricks.com

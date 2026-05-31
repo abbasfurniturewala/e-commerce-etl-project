@@ -1,0 +1,45 @@
+resources:
+  jobs:
+    ecommerce_setup_job:
+      name: "[${bundle.target}] ecommerce setup storage"
+      tasks:
+        - task_key: setup_storage
+          notebook_task:
+            notebook_path: ../notebooks/00_setup_storage.py
+            base_parameters:
+              catalog: ${var.catalog}
+              bronze_schema: ${var.bronze_schema}
+              silver_schema: ${var.silver_schema}
+              gold_schema: ${var.gold_schema}
+              landing_volume: ${var.landing_volume}
+
+    ecommerce_lakehouse_pipeline:
+      name: "[${bundle.target}] ecommerce lakehouse pipeline"
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/01_bronze_ingestion.py
+            base_parameters:
+              catalog: ${var.catalog}
+              bronze_schema: ${var.bronze_schema}
+              landing_volume: ${var.landing_volume}
+
+        - task_key: silver_transformations
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../notebooks/02_silver_transformations.py
+            base_parameters:
+              catalog: ${var.catalog}
+              bronze_schema: ${var.bronze_schema}
+              silver_schema: ${var.silver_schema}
+
+        - task_key: gold_analytics
+          depends_on:
+            - task_key: silver_transformations
+          notebook_task:
+            notebook_path: ../notebooks/03_gold_analytics.py
+            base_parameters:
+              catalog: ${var.catalog}
+              silver_schema: ${var.silver_schema}
+              gold_schema: ${var.gold_schema}
