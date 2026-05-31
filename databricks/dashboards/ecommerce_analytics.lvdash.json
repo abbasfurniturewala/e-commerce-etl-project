@@ -1,0 +1,484 @@
+{
+  "datasets": [
+    {
+      "displayName": "Executive KPIs",
+      "name": "a1b2c3d4",
+      "query": "select\n    count(*) as total_orders,\n    count(distinct customer_id) as total_customers,\n    sum(item_count) as total_items,\n    cast(sum(payment_total) as decimal(16, 2)) as gross_payment_value,\n    cast(avg(payment_total) as decimal(14, 2)) as average_order_value,\n    cast(avg(average_review_score) as decimal(4, 2)) as average_review_score\nfrom fct_orders"
+    },
+    {
+      "displayName": "Daily Sales",
+      "name": "b1c2d3e4",
+      "query": "select\n    order_purchase_date,\n    order_count,\n    item_count,\n    payment_total,\n    average_review_score\nfrom mart_daily_sales\norder by order_purchase_date"
+    },
+    {
+      "displayName": "Delivery Performance",
+      "name": "c1d2e3f4",
+      "query": "select\n    order_purchase_date,\n    late_delivery_count,\n    cast(100 * late_delivery_rate as decimal(8, 2)) as late_delivery_percentage,\n    average_delivery_days\nfrom mart_delivery_performance\norder by order_purchase_date"
+    },
+    {
+      "displayName": "Top Sellers",
+      "name": "d1e2f3a4",
+      "query": "select\n    seller_id,\n    seller_city,\n    seller_state,\n    order_count,\n    order_line_total\nfrom mart_seller_performance\norder by order_line_total desc, seller_id\nlimit 10"
+    },
+    {
+      "displayName": "Customer RFM Segments",
+      "name": "e1f2a3b4",
+      "query": "with segmented_customers as (\n    select\n        monetary_value,\n        case\n            when recency_score >= 4 and frequency_score >= 4 and monetary_score >= 4 then 'Champions'\n            when recency_score >= 3 and frequency_score >= 3 then 'Loyal customers'\n            when recency_score >= 4 then 'Recent customers'\n            when recency_score <= 2 and frequency_score >= 3 then 'At risk'\n            else 'Needs attention'\n        end as customer_segment\n    from mart_customer_rfm\n)\nselect\n    customer_segment,\n    count(*) as customer_count,\n    cast(sum(monetary_value) as decimal(16, 2)) as segment_value\nfrom segmented_customers\ngroup by customer_segment\norder by segment_value desc, customer_segment"
+    },
+    {
+      "displayName": "Sales by Customer State",
+      "name": "f1a2b3c4",
+      "query": "select\n    customers.customer_state,\n    count(*) as order_count,\n    cast(sum(orders.payment_total) as decimal(16, 2)) as gross_payment_value\nfrom fct_orders as orders\ninner join dim_customers as customers\n    on orders.customer_id = customers.customer_id\ngroup by customers.customer_state\norder by gross_payment_value desc, customers.customer_state"
+    }
+  ],
+  "pages": [
+    {
+      "displayName": "Executive Overview",
+      "layout": [
+        {
+          "position": {
+            "height": 1,
+            "width": 6,
+            "x": 0,
+            "y": 0
+          },
+          "widget": {
+            "name": "title001",
+            "textbox_spec": "# E-Commerce Analytics\nGold-layer performance overview"
+          }
+        },
+        {
+          "position": {
+            "height": 2,
+            "width": 1,
+            "x": 0,
+            "y": 1
+          },
+          "widget": {
+            "name": "count001",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a1b2c3d4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`total_orders`",
+                      "name": "total_orders"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "value": {
+                  "displayName": "Total Orders",
+                  "fieldName": "total_orders"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Orders"
+              },
+              "version": 2,
+              "widgetType": "counter"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 2,
+            "width": 1,
+            "x": 1,
+            "y": 1
+          },
+          "widget": {
+            "name": "count002",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a1b2c3d4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`total_customers`",
+                      "name": "total_customers"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "value": {
+                  "displayName": "Total Customers",
+                  "fieldName": "total_customers"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customers"
+              },
+              "version": 2,
+              "widgetType": "counter"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 2,
+            "width": 2,
+            "x": 2,
+            "y": 1
+          },
+          "widget": {
+            "name": "count003",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a1b2c3d4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`gross_payment_value`",
+                      "name": "gross_payment_value"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "value": {
+                  "displayName": "Gross Payment Value",
+                  "fieldName": "gross_payment_value"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gross Payment Value"
+              },
+              "version": 2,
+              "widgetType": "counter"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 2,
+            "width": 2,
+            "x": 4,
+            "y": 1
+          },
+          "widget": {
+            "name": "count004",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a1b2c3d4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`average_order_value`",
+                      "name": "average_order_value"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "value": {
+                  "displayName": "Average Order Value",
+                  "fieldName": "average_order_value"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Order Value"
+              },
+              "version": 2,
+              "widgetType": "counter"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 4,
+            "width": 3,
+            "x": 0,
+            "y": 3
+          },
+          "widget": {
+            "name": "line0001",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b1c2d3e4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`order_purchase_date`",
+                      "name": "order_purchase_date"
+                    },
+                    {
+                      "expression": "`payment_total`",
+                      "name": "payment_total"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "x": {
+                  "displayName": "Order Date",
+                  "fieldName": "order_purchase_date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "displayName": "Payment Value",
+                  "fieldName": "payment_total",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Daily Payment Value"
+              },
+              "version": 3,
+              "widgetType": "line"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 4,
+            "width": 3,
+            "x": 3,
+            "y": 3
+          },
+          "widget": {
+            "name": "line0002",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c1d2e3f4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`order_purchase_date`",
+                      "name": "order_purchase_date"
+                    },
+                    {
+                      "expression": "`late_delivery_percentage`",
+                      "name": "late_delivery_percentage"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "x": {
+                  "displayName": "Order Date",
+                  "fieldName": "order_purchase_date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "displayName": "Late Delivery Percentage",
+                  "fieldName": "late_delivery_percentage",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Late Delivery Rate"
+              },
+              "version": 3,
+              "widgetType": "line"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 4,
+            "width": 3,
+            "x": 0,
+            "y": 7
+          },
+          "widget": {
+            "name": "bar00001",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f1a2b3c4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`customer_state`",
+                      "name": "customer_state"
+                    },
+                    {
+                      "expression": "`gross_payment_value`",
+                      "name": "gross_payment_value"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "x": {
+                  "displayName": "Customer State",
+                  "fieldName": "customer_state",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "displayName": "Gross Payment Value",
+                  "fieldName": "gross_payment_value",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Sales by Customer State"
+              },
+              "version": 3,
+              "widgetType": "bar"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 4,
+            "width": 3,
+            "x": 3,
+            "y": 7
+          },
+          "widget": {
+            "name": "bar00002",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "e1f2a3b4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`customer_segment`",
+                      "name": "customer_segment"
+                    },
+                    {
+                      "expression": "`customer_count`",
+                      "name": "customer_count"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "x": {
+                  "displayName": "Customer Segment",
+                  "fieldName": "customer_segment",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "displayName": "Customer Count",
+                  "fieldName": "customer_count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customer RFM Segments"
+              },
+              "version": 3,
+              "widgetType": "bar"
+            }
+          }
+        },
+        {
+          "position": {
+            "height": 4,
+            "width": 6,
+            "x": 0,
+            "y": 11
+          },
+          "widget": {
+            "name": "bar00003",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d1e2f3a4",
+                  "disaggregated": true,
+                  "fields": [
+                    {
+                      "expression": "`seller_id`",
+                      "name": "seller_id"
+                    },
+                    {
+                      "expression": "`order_line_total`",
+                      "name": "order_line_total"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "encodings": {
+                "x": {
+                  "displayName": "Seller ID",
+                  "fieldName": "seller_id",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "displayName": "Order Line Total",
+                  "fieldName": "order_line_total",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Top Sellers"
+              },
+              "version": 3,
+              "widgetType": "bar"
+            }
+          }
+        }
+      ],
+      "name": "overview1"
+    }
+  ]
+}

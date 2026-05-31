@@ -20,6 +20,9 @@ variables:
   landing_volume:
     description: Managed Unity Catalog volume receiving immutable daily landing files.
     default: landing
+  warehouse_id:
+    description: SQL warehouse used by the AI/BI dashboard.
+    default: 9246515affbaccaf
 
 targets:
   dev:

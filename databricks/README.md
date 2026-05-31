@@ -53,3 +53,19 @@ Local immutable landing batches
 
 The setup and ingestion operations are idempotent. Bronze rows merge by source-row hash,
 while Silver and Gold tables are rebuilt from the current Bronze state.
+
+## SQL Analytics
+
+The `sql/` directory contains reusable reporting queries for Databricks SQL, AI/BI
+dashboards, and Power BI. Validate every query through the SQL Statements API:
+
+```powershell
+$env:DATABRICKS_SQL_WAREHOUSE_ID = "9246515affbaccaf"
+powershell -ExecutionPolicy Bypass -File .\databricks\scripts\validate_sql_queries.ps1
+```
+
+See [`sql/README.md`](sql/README.md) for the dashboard blueprint and Power BI connection
+settings.
+
+The bundle also deploys a starter AI/BI dashboard named `Ecommerce Analytics`.
+Its source-controlled definition lives in `dashboards/ecommerce_analytics.lvdash.json`.

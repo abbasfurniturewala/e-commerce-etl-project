@@ -1,7 +1,7 @@
 resources:
   jobs:
     ecommerce_setup_job:
-      name: "[${bundle.target}] ecommerce setup storage"
+      name: ecommerce setup storage
       tasks:
         - task_key: setup_storage
           notebook_task:
@@ -14,7 +14,7 @@ resources:
               landing_volume: ${var.landing_volume}
 
     ecommerce_lakehouse_pipeline:
-      name: "[${bundle.target}] ecommerce lakehouse pipeline"
+      name: ecommerce lakehouse pipeline
       tasks:
         - task_key: bronze_ingestion
           notebook_task:

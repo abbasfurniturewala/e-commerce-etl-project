@@ -3,8 +3,8 @@
 This project replays the public Olist e-commerce dataset as daily batches and builds an
 analytics pipeline incrementally. The current milestone lands source files, loads an
 idempotent PostgreSQL raw layer, and orchestrates a tested dbt analytics warehouse with
-Airflow. A serverless Databricks lakehouse builds Bronze, Silver, and Gold Delta tables;
-Databricks SQL and Power BI analytics remain the next milestone.
+Airflow. A serverless Databricks lakehouse builds Bronze, Silver, and Gold Delta tables,
+with reusable Databricks SQL reporting queries ready for AI/BI dashboards and Power BI.
 
 ## Architecture
 
@@ -128,5 +128,5 @@ file upload, and job execution steps.
 ## Roadmap
 
 - Add validation tasks and a replay cursor to the Airflow ingestion DAG.
-- Add Databricks SQL queries and a starter analytics dashboard over the Gold marts.
+- Refine the starter Databricks AI/BI dashboard as replay volume grows.
 - Connect Power BI to the final reporting marts.
