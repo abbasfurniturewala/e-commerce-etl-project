@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecommerce-pipeline"
+version = "0.1.0"
+description = "Replayable e-commerce data engineering pipeline using the Olist dataset."
+requires-python = ">=3.11"
+dependencies = [
+  "psycopg[binary]>=3.1,<4",
+  "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+warehouse = [
+  "dbt-core==1.11.11",
+  "dbt-postgres==1.10.0",
+]
+
+[project.scripts]
+ecommerce-pipeline = "ecommerce_pipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,12 @@
+ecommerce_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | int }}"
+      user: "{{ env_var('POSTGRES_USER', 'ecommerce') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'ecommerce') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'ecommerce') }}"
+      schema: analytics
+      threads: 4

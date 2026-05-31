@@ -1,0 +1,23 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Downloaded and generated data should stay local.
+data/source/*
+!data/source/.gitkeep
+data/landing/*
+!data/landing/.gitkeep
+
+# Airflow runtime output stays local.
+airflow/logs/*
+!airflow/logs/.gitkeep
+
+# dbt runtime output stays local.
+dbt/logs/
+dbt/target/
+dbt/.user.yml

@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: mart_daily_sales
+    description: Daily order and line-value summary for reporting.
+    columns:
+      - name: order_purchase_date
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mart_delivery_performance
+    description: Daily delivered-order timing and late-delivery summary.
+    columns:
+      - name: order_purchase_date
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mart_seller_performance
+    description: Seller-grain revenue, order-volume, freight, and review summary.
+    columns:
+      - name: seller_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: mart_customer_rfm
+    description: Customer-grain recency, frequency, monetary metrics and five-band RFM scores.
+    columns:
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+          - unique

@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecommerce-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ecommerce}
+      POSTGRES_USER: ${POSTGRES_USER:-ecommerce}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ecommerce}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ecommerce} -d ${POSTGRES_DB:-ecommerce}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  airflow:
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    container_name: ecommerce-airflow
+    command: standalone
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      DBT_PROFILES_DIR: /opt/ecommerce/dbt
+      DBT_PROJECT_DIR: /opt/ecommerce/dbt
+      LANDING_DIR: /opt/ecommerce/data/landing
+      POSTGRES_DB: ${POSTGRES_DB:-ecommerce}
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ecommerce}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-ecommerce}
+      SCHEMA_PATH: /opt/ecommerce/sql/raw_schema.sql
+      SOURCE_DIR: /opt/ecommerce/data/source
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./dbt:/opt/ecommerce/dbt
+      - ./data:/opt/ecommerce/data
+      - ./sql:/opt/ecommerce/sql:ro
+      - airflow_data:/opt/airflow
+
+volumes:
+  airflow_data:
+  postgres_data:

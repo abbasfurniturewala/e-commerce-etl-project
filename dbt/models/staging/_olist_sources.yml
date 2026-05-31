@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: olist
+    schema: raw
+    description: Raw Olist CSV records loaded incrementally by the Python ingestion layer.
+    tables:
+      - name: olist_orders
+        columns:
+          - name: order_id
+            data_tests:
+              - not_null
+              - unique
+          - name: customer_id
+            data_tests:
+              - not_null
+          - name: order_purchase_timestamp
+            data_tests:
+              - not_null
+
+      - name: olist_order_items
+        columns:
+          - name: order_id
+            data_tests:
+              - not_null
+          - name: order_item_id
+            data_tests:
+              - not_null
+          - name: product_id
+            data_tests:
+              - not_null
+          - name: seller_id
+            data_tests:
+              - not_null
+
+      - name: olist_order_payments
+      - name: olist_order_reviews
+      - name: olist_customers
+      - name: olist_products
+      - name: olist_sellers
+      - name: olist_geolocation
+      - name: product_category_name_translation
